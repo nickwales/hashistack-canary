@@ -108,10 +108,10 @@ func KillMe(w http.ResponseWriter, r *http.Request) {
 
 	if diff.Minutes() > deathTime {
 		w.WriteHeader(http.StatusInternalServerError)
-		status = "Its time to go down"
+		status = "Current Status: waiting for Nomad to reschedule"
 	} else {
-		status = "Ooh ooh ooh, we're staying alive"
+		status = "Current Status: staying alive"
 	}
 
-	fmt.Fprintf(w, "Time alive: %s\nWe're staying up for: %v \n%s", diff, int(deathTime), status)
+	fmt.Fprintf(w, "Time alive: %s\nLifetime: %v minutes \n%s", diff, int(deathTime), status)
 }
