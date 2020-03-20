@@ -40,7 +40,7 @@ func TokenStatus() (map[string]HealthStatus, map[string]HealthStatus) {
 }
 
 func checkTokenPolicies(token *api.Secret, policy string) (policyAvailable bool) {
-	requiredPolicy := "root"
+	requiredPolicy := "hashistack-canary"
 	policies := token.Data["policies"]
 	for _, policy := range policies.([]interface{}) {
 		if policy == requiredPolicy {
