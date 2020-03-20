@@ -16,5 +16,5 @@ FROM alpine:3.11.3
 
 # copy binary into container
 COPY --from=builder /build/hashistack-canary .
-
+EXPOSE 8080
 ENTRYPOINT [ "./hashistack-canary" ]
