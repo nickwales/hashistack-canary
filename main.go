@@ -24,7 +24,16 @@ var startTime time.Time
 
 var httpPort string
 
+var lifeSupport int
+
 func init() {
+
+	s1 := rand.NewSource(time.Now().UnixNano())
+	r1 := rand.New(s1)
+	lifeSupport = r1.Intn(10)
+
+	fmt.Println("Lifesupport: ", lifeSupport)
+
 	overallHealth = make(map[string]HealthStatus)
 
 	startTime = time.Now()
@@ -56,7 +65,7 @@ func main() {
 	go receiveStatuses(h)
 	go getVaultStatus(h)
 
-	http.HandleFunc("/health", KillMe)
+	http.HandleFunc("/health/", KillMe)
 	http.HandleFunc("/", GetHealthStatus)
 	http.ListenAndServe(":8080", nil)
 }
@@ -94,17 +103,15 @@ func KillMe(w http.ResponseWriter, r *http.Request) {
 	currentTime := time.Now()
 	diff := currentTime.Sub(startTime)
 
-	lifeSupport := rand.Intn(10)
-
 	var deathTime float64
 	deathTime = 10 + float64(lifeSupport)
 
 	if diff.Minutes() > deathTime {
 		w.WriteHeader(http.StatusInternalServerError)
-		status = "going down"
+		status = "Its time to go down"
 	} else {
-		status = "staying Alive"
+		status = "Ooh ooh ooh, we're staying alive"
 	}
 
-	fmt.Fprintf(w, "Time alive: %s\n, We're staying up for: %s \nWe're %s", diff, deathTime, status)
+	fmt.Fprintf(w, "Time alive: %s\nWe're staying up for: %v \n%s", diff, int(deathTime), status)
 }
