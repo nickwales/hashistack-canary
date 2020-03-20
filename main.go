@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"os"
 	"time"
@@ -93,8 +94,10 @@ func KillMe(w http.ResponseWriter, r *http.Request) {
 	currentTime := time.Now()
 	diff := currentTime.Sub(startTime)
 
+	lifeSupport := rand.Intn(10)
+
 	var deathTime float64
-	deathTime = 10
+	deathTime = 10 + float64(lifeSupport)
 
 	if diff.Minutes() > deathTime {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -103,5 +106,5 @@ func KillMe(w http.ResponseWriter, r *http.Request) {
 		status = "staying Alive"
 	}
 
-	fmt.Fprintf(w, "Time alive: %s, we're %s", diff, status)
+	fmt.Fprintf(w, "Time alive: %s\n, We're staying up for: %s \nWe're %s", diff, deathTime, status)
 }
