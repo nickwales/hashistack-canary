@@ -21,6 +21,8 @@ var overallHealth map[string]HealthStatus
 
 var startTime time.Time
 
+var httpPort string
+
 func init() {
 	overallHealth = make(map[string]HealthStatus)
 
@@ -53,7 +55,7 @@ func main() {
 	go receiveStatuses(h)
 	go getVaultStatus(h)
 
-	http.HandleFunc("/alive.txt", KillMe)
+	http.HandleFunc("/health", KillMe)
 	http.HandleFunc("/", GetHealthStatus)
 	http.ListenAndServe(":8080", nil)
 }
@@ -92,17 +94,14 @@ func KillMe(w http.ResponseWriter, r *http.Request) {
 	diff := currentTime.Sub(startTime)
 
 	var deathTime float64
-	deathTime = 1
+	deathTime = 10
 
 	if diff.Minutes() > deathTime {
-		fmt.Println("Our time is now")
 		w.WriteHeader(http.StatusInternalServerError)
 		status = "going down"
 	} else {
-		fmt.Println("Its not yet thats fosho")
 		status = "staying Alive"
 	}
 
 	fmt.Fprintf(w, "Time alive: %s, we're %s", diff, status)
-
 }
